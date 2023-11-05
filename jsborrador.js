@@ -2,12 +2,12 @@ window.onload = function () {
 
 	const TOPEDERECHA = 400;
 	const TOPEABAJO = 700;
-    const ANCHOPJ = 10;
-    const ALTOPJ = 30;
-    const VELOCIDADPJ = 3;
+    const ANCHOPJ = 35; // Aunque el sprite mide 40 píxeles, definir el ancho del personaje en 35 píxeles ayuda a conseguir una mejor coherencia visual en lo relativo a las colisiones
+    const ALTOPJ = 40;
+    const VELOCIDADPJ = 2.6;
 
-	let x = TOPEDERECHA / 2 - ANCHOPJ;        // posición inicial x del personaje
-	let y = 300;      // posición y del personaje (en principio, invariable)
+	let x = TOPEDERECHA / 2 - (ANCHOPJ / 2);        // posición inicial x del personaje
+	let y = 100;      // posición y del personaje (en principio, invariable)
 	let canvas;     // variable que referencia al elemento canvas del html
 	let ctx;        // contexto de trabajo
 	let id1, id2;   // id de la animación
@@ -26,9 +26,9 @@ window.onload = function () {
 		this.x = x;
         this.y = y;
         this.velocidadPJ = VELOCIDADPJ;
-		this.animacionPJ = [[30, 640], [1430, 645], [1050, 398], [1300, 270]]; // Por orden: no disparando mirando a la derecha, no disparando mirando a la izquierda, disparando mirando a la derecha, disparando mirando a la izquierda
-		this.tamañoX = 70;
-		this.tamañoY = 120;
+		this.animacionPJ = [[0, 0], [40, 0], [80, 0], [120, 0], [160, 0]]; // Por orden: manos arriba, cayendo izquierda, cayendo derecha, disparando izquierda, disparando derecha
+		this.tamañoX = 40;
+		this.tamañoY = 40;
 
 	}
 
@@ -36,17 +36,18 @@ window.onload = function () {
 
 		this.x = this.x + this.velocidadPJ;
 
-		if (this.x > TOPEDERECHA) {
-			this.x = TOPEDERECHA;
+		if (this.x > (TOPEDERECHA - ANCHOPJ)) {
+			this.x = TOPEDERECHA - ANCHOPJ;
 		}
 	}
 
 	Personaje.prototype.generaPosicionIzquierda = function () {
 
-		this.x = this.x - this.velocidad;
-
-		if (this.x < TOPEIZQUIERDA) {
-			this.x = TOPEIZQUIERDA;
+		this.x = this.x - this.velocidadPJ;
+		
+		// -8 en lugar de -0 para que el personaje visualmente se encuentre más cerca de los límites del canvas
+		if (this.x < (-8)) {
+			this.x = (-8);
 		}
 	}
 
@@ -63,8 +64,8 @@ window.onload = function () {
 			miPersonaje.generaPosicionIzquierda();
 		}
 
-		// Pintamos el comecocos
-		ctx.drawImage(miPersonaje.imagen, // Imagen completa con todos los comecocos (Sprite)
+		// Pintamos al personaje
+		ctx.drawImage(miPersonaje.imagen, // Imagen completa con todos los personajes (Sprite)
 			miPersonaje.animacionPJ[posicion][0],    // Posicion X del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
 			miPersonaje.animacionPJ[posicion][1],	  // Posicion Y del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
 			miPersonaje.tamañoX, 		    // Tamaño X del comecocos que voy a recortar para dibujar
@@ -117,7 +118,7 @@ window.onload = function () {
 			// Right arrow.
 			case 39:
 				xDerecha = true;
-				posicion = 0;
+				posicion = 2;
 				break;
 
 		}
@@ -152,7 +153,7 @@ window.onload = function () {
 	ctx = canvas.getContext("2d");
 
 	imagen = new Image();
-	imagen.src = "char_orange.png";
+	imagen.src = "SpritePersonaje40.png";
 	Personaje.prototype.imagen = imagen;
 
 	miPersonaje = new Personaje(x, y);
@@ -161,3 +162,7 @@ window.onload = function () {
 	id1 = setInterval(pintaRectangulo, 1000 / 120);
 
 }
+
+/*
+Créditos a los autores de los modelos utilizados en el sprite: "Authors: bluecarrot16, Benjamin K. Smith (BenCreating), Evert, Eliza Wyatt (ElizaWy), TheraHedwig, MuffinElZangano, Durrani, Johannes Sj?lund (wulax), Stephen Challener (Redshrike), Manuel Riecke (MrBeast), Joe White, David Conway Jr. (JaidynReiman), Johannes Sjölund (wulax), Matthew Krohn (makrohn), drjamgo@hotmail.com".
+*/
