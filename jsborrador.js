@@ -2,12 +2,23 @@ window.onload = function () {
 
 	const TOPEDERECHA = 400;
 	const TOPEABAJO = 700;
-    const ANCHOPJ = 35; // Aunque el sprite mide 40 píxeles, definir el ancho del personaje en 35 píxeles ayuda a conseguir una mejor coherencia visual en lo relativo a las colisiones
-    const ALTOPJ = 40;
-    const VELOCIDADPJ = 2.6;
+	const POSICIONPJ = 100; // Posición Y del personaje durante la partida
+	const ANCHOPJ = 35; // Aunque el sprite mide 40 píxeles, definir el ancho del personaje en 35 píxeles ayuda a conseguir una mejor coherencia visual en lo relativo a las colisiones
+	const ALTOPJ = 40;
+	const ANCHOENEMIGO = 20;
+	const ALTOENEMIGO = 20;
+	const VELOCIDADPJ = 2.6;
+	const ENEMIGOSMINIMOS = 30;
+	const ENEMIGOSMAXIMOS = 100;
+	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
+	const GRAVEDAD = 2;
+	const PROFUNDIDADENEMIGOS = 5000;
+	let enemigos = [];
+	let posicionX, posicionY;
 
+	//lineas 15 a 58: personaje
 	let x = TOPEDERECHA / 2 - (ANCHOPJ / 2);        // posición inicial x del personaje
-	let y = 100;      // posición y del personaje (en principio, invariable)
+	let y = POSICIONPJ;      // posición y del personaje (en principio, invariable)
 	let canvas;     // variable que referencia al elemento canvas del html
 	let ctx;        // contexto de trabajo
 	let id1, id2;   // id de la animación
@@ -21,11 +32,11 @@ window.onload = function () {
 	let miPersonaje;
 	let imagen; // en principio tendremos en una sola imagen tanto sprites del personaje como de los enemigos. Puede variar más adelante
 
-	function Personaje(x, y) {
+	function Personaje (x, y) {
 
 		this.x = x;
-        this.y = y;
-        this.velocidadPJ = VELOCIDADPJ;
+		this.y = y;
+		this.velocidadPJ = VELOCIDADPJ;
 		this.animacionPJ = [[0, 0], [40, 0], [80, 0], [120, 0], [160, 0]]; // Por orden: manos arriba, cayendo izquierda, cayendo derecha, disparando izquierda, disparando derecha
 		this.tamañoX = 40;
 		this.tamañoY = 40;
@@ -44,11 +55,23 @@ window.onload = function () {
 	Personaje.prototype.generaPosicionIzquierda = function () {
 
 		this.x = this.x - this.velocidadPJ;
-		
+
 		// -8 en lugar de -0 para que el personaje visualmente se encuentre más cerca de los límites del canvas
 		if (this.x < (-8)) {
 			this.x = (-8);
 		}
+	}
+
+	//lineas 61 a : enemigos
+	function Enemigo (x, y) {
+		this.x = x;
+		this.y = y; // de momento la velocidad es invariable, para hacerla variable ver el ejercicio de cuadrados en el drive
+	}
+
+	for (let i = 0; i < NUMENEMIGOS; i++) {
+		posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
+		posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
+		enemigos[i] = new Enemigo (posicionX, posicionY);
 	}
 
 	function pintaRectangulo() {
@@ -75,36 +98,42 @@ window.onload = function () {
 			miPersonaje.tamañoX,		    // Tamaño X del comecocos que voy a dibujar
 			miPersonaje.tamañoY);         // Tamaño Y del comecocos que voy a dibujar					  
 
+		for (let i = 0; i < NUMENEMIGOS; i++) {
+			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
+			ctx.fillStyle = "black"
+			enemigos[i].y -= GRAVEDAD;
+		}
+
 	}
-/*
-	function activarSpriteDerecha() {
-
-		if (!ejecutarDerecha) posicion = 0;
-
-		ejecutarDerecha = true;
-	}
-
-	function activarSpriteIzquierda() {
-
-		if (ejecutarDerecha) posicion = 2;
-
-		ejecutarDerecha = false;
-	}
-
-	function activarSpriteAbajo() {
-
-		if (!ejecutarAbajo) posicion = 4;
-
-		ejecutarAbajo = true;
-	}
-
-	function activarSpriteArriba() {
-
-		if (ejecutarAbajo) posicion = 6;
-
-		ejecutarAbajo = false;
-	}
-*/
+	/*
+		function activarSpriteDerecha() {
+	
+			if (!ejecutarDerecha) posicion = 0;
+	
+			ejecutarDerecha = true;
+		}
+	
+		function activarSpriteIzquierda() {
+	
+			if (ejecutarDerecha) posicion = 2;
+	
+			ejecutarDerecha = false;
+		}
+	
+		function activarSpriteAbajo() {
+	
+			if (!ejecutarAbajo) posicion = 4;
+	
+			ejecutarAbajo = true;
+		}
+	
+		function activarSpriteArriba() {
+	
+			if (ejecutarAbajo) posicion = 6;
+	
+			ejecutarAbajo = false;
+		}
+	*/
 	function activaMovimiento(evt) {
 
 		switch (evt.keyCode) {
