@@ -5,16 +5,16 @@ window.onload = function () {
 	const POSICIONPJ = 100; // Posición Y del personaje durante la partida
 	const ANCHOPJ = 35; // Aunque el sprite mide 40 píxeles, definir el ancho del personaje en 35 píxeles ayuda a conseguir una mejor coherencia visual en lo relativo a las colisiones
 	const ALTOPJ = 40;
-	const ANCHOENEMIGO = 20;
-	const ALTOENEMIGO = 20;
+	const ANCHOENEMIGO = 25;
+	const ALTOENEMIGO = 25;
 	const VELOCIDADPJ = 2.6;
-	const ENEMIGOSMINIMOS = 30;
-	const ENEMIGOSMAXIMOS = 100;
+	const ENEMIGOSMINIMOS = 150;
+	const ENEMIGOSMAXIMOS = 300;
 	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
 	const GRAVEDAD = 2;
-	const PROFUNDIDADENEMIGOS = 5000;
+	const PROFUNDIDADENEMIGOS = 20000;
 	let enemigos = [];
-	let posicionX, posicionY;
+	let posicionX, posicionY, velocidadEnemigo;
 
 	//lineas 15 a 58: personaje
 	let x = TOPEDERECHA / 2 - (ANCHOPJ / 2);        // posición inicial x del personaje
@@ -63,15 +63,18 @@ window.onload = function () {
 	}
 
 	//lineas 61 a : enemigos
-	function Enemigo (x, y) {
+	function Enemigo (x, y, velocidad) {
 		this.x = x;
 		this.y = y; // de momento la velocidad es invariable, para hacerla variable ver el ejercicio de cuadrados en el drive
+		this.velocidad = velocidad;
 	}
 
 	for (let i = 0; i < NUMENEMIGOS; i++) {
 		posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
 		posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
-		enemigos[i] = new Enemigo (posicionX, posicionY);
+		velocidadEnemigo = (Math.random() - 0.5) * 3;
+		enemigos[i] = new Enemigo (posicionX, posicionY, velocidadEnemigo);
+		console.log(enemigos[i].velocidad);
 	}
 
 	function pintaRectangulo() {
@@ -100,10 +103,16 @@ window.onload = function () {
 
 		for (let i = 0; i < NUMENEMIGOS; i++) {
 			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
-			ctx.fillStyle = "black"
+			ctx.fillStyle = "black";
+			enemigos[i].x += enemigos[i].velocidad;
+			if (enemigos[i].x <= 0){ // toca pared de la izquierda
+				enemigos[i].velocidad = Math.abs(enemigos[i].velocidad);
+			}
+			if (enemigos[i].x >= TOPEDERECHA - ANCHOENEMIGO){ // toca pared de la derecha
+				enemigos[i].velocidad = -Math.abs(enemigos[i].velocidad);
+			}
 			enemigos[i].y -= GRAVEDAD;
 		}
-
 	}
 	/*
 		function activarSpriteDerecha() {
