@@ -8,13 +8,12 @@ window.onload = function () {
 	const ANCHOENEMIGO = 25;
 	const ALTOENEMIGO = 25;
 	const VELOCIDADPJ = 2.6;
-	const ENEMIGOSMINIMOS = 150;
-	const ENEMIGOSMAXIMOS = 300;
+	const ENEMIGOSMINIMOS = 750;
+	const ENEMIGOSMAXIMOS = 1500;
 	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
-	const GRAVEDAD = 2;
-	const PROFUNDIDADENEMIGOS = 20000;
+	const PROFUNDIDADENEMIGOS = 100000;
 	let enemigos = [];
-	let posicionX, posicionY, velocidadEnemigo;
+	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
 	let x = TOPEDERECHA / 2 - (ANCHOPJ / 2);        // posición inicial x del personaje
@@ -63,18 +62,19 @@ window.onload = function () {
 	}
 
 	//lineas 61 a : enemigos
-	function Enemigo (x, y, velocidad) {
+	function Enemigo (x, y, velocidadX, velocidadY) {
 		this.x = x;
-		this.y = y; // de momento la velocidad es invariable, para hacerla variable ver el ejercicio de cuadrados en el drive
-		this.velocidad = velocidad;
+		this.y = y;
+		this.velocidadX = velocidadX;
+		this.velocidadY = velocidadY;
 	}
 
 	for (let i = 0; i < NUMENEMIGOS; i++) {
 		posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
 		posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
-		velocidadEnemigo = (Math.random() - 0.5) * 3;
-		enemigos[i] = new Enemigo (posicionX, posicionY, velocidadEnemigo);
-		console.log(enemigos[i].velocidad);
+		velocidadEnemigoX = (Math.random() - 0.5) * 3;
+		velocidadEnemigoY = 2; // todos los enemigos parten de la misma velocidad Y inicial.
+		enemigos[i] = new Enemigo (posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY);
 	}
 
 	function pintaRectangulo() {
@@ -104,14 +104,15 @@ window.onload = function () {
 		for (let i = 0; i < NUMENEMIGOS; i++) {
 			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
 			ctx.fillStyle = "black";
-			enemigos[i].x += enemigos[i].velocidad;
+			enemigos[i].x += enemigos[i].velocidadX;
 			if (enemigos[i].x <= 0){ // toca pared de la izquierda
-				enemigos[i].velocidad = Math.abs(enemigos[i].velocidad);
+				enemigos[i].velocidadX = Math.abs(enemigos[i].velocidadX);
 			}
 			if (enemigos[i].x >= TOPEDERECHA - ANCHOENEMIGO){ // toca pared de la derecha
-				enemigos[i].velocidad = -Math.abs(enemigos[i].velocidad);
+				enemigos[i].velocidadX = -Math.abs(enemigos[i].velocidadX);
 			}
-			enemigos[i].y -= GRAVEDAD;
+			enemigos[i].y -= enemigos[i].velocidadY;
+			enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
 		}
 	}
 	/*
