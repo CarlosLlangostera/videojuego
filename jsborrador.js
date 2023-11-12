@@ -14,6 +14,7 @@ window.onload = function () {
 	const PROFUNDIDADENEMIGOS = 100000;
 	let enemigos = [];
 	let vidas = 3;
+	let puntuacion = 0;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -79,7 +80,7 @@ window.onload = function () {
 	}
 
 	function pintar() {
-
+		document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
 		// borramos el canvas
 		ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
 
@@ -116,9 +117,12 @@ window.onload = function () {
 			enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
 			if (enemigos[i].y <= 0 - (ALTOENEMIGO + 2)){ // vamos vaciando el array "enemigos" por optimización y por tener una manera de saber cuándo se ha superado el juego. "+ 2" para que no se llegue a ver el último cuadrado en pantalla.
 				enemigos.splice(i, 1);
+				puntuacion++;
 			}
 			if(enemigos.length == 0){
-				document.getElementById("Mensaje").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
+				puntuacion = 10000;
+				document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion;
+				document.getElementById("MensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
 				clearInterval(idPintar);
 			}
 		}
@@ -207,7 +211,6 @@ window.onload = function () {
 
 	// Lanzamos la animación
 	idPintar = setInterval(pintar, 1000 / 120);
-
 }
 
 /*
