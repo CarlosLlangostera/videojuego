@@ -11,6 +11,7 @@ window.onload = function () {
 	const ENEMIGOSMINIMOS = 750;
 	const ENEMIGOSMAXIMOS = 1500;
 	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
+	let enemigosRestantes = NUMENEMIGOS; // esta variable la usamos para evitar provocar fallos buscando en posiciones del array "enemigos" que ya no existen porque hemos borrado algún elemento
 	const PROFUNDIDADENEMIGOS = 100000;
 	let enemigos = [];
 	let vidas = 3;
@@ -103,7 +104,7 @@ window.onload = function () {
 			miPersonaje.tamañoX,		    // Tamaño X del comecocos que voy a dibujar
 			miPersonaje.tamañoY);         // Tamaño Y del comecocos que voy a dibujar					  
 
-		for (let i = 0; i < NUMENEMIGOS; i++) {
+		for (let i = 0; i < enemigosRestantes; i++) {
 			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
 			ctx.fillStyle = "black";
 			enemigos[i].x += enemigos[i].velocidadX;
@@ -117,6 +118,7 @@ window.onload = function () {
 			enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
 			if (enemigos[i].y <= 0 - (ALTOENEMIGO + 2)){ // vamos vaciando el array "enemigos" por optimización y por tener una manera de saber cuándo se ha superado el juego. "+ 2" para que no se llegue a ver el último cuadrado en pantalla.
 				enemigos.splice(i, 1);
+				enemigosRestantes--;
 				puntuacion++;
 			}
 			if(enemigos.length == 0){
