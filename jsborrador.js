@@ -13,6 +13,7 @@ window.onload = function () {
 	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
 	const PROFUNDIDADENEMIGOS = 100000;
 	let enemigos = [];
+	let vidas = 3;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -20,7 +21,7 @@ window.onload = function () {
 	let y = POSICIONPJ;      // posición y del personaje (en principio, invariable)
 	let canvas;     // variable que referencia al elemento canvas del html
 	let ctx;        // contexto de trabajo
-	let id1, id2;   // id de la animación
+	let idPintar;
 
 	let xDerecha;
 	let xIzquierda;
@@ -77,7 +78,7 @@ window.onload = function () {
 		enemigos[i] = new Enemigo (posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY);
 	}
 
-	function pintaRectangulo() {
+	function pintar() {
 
 		// borramos el canvas
 		ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
@@ -113,6 +114,13 @@ window.onload = function () {
 			}
 			enemigos[i].y -= enemigos[i].velocidadY;
 			enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
+			if (enemigos[i].y <= 0 - (ALTOENEMIGO + 2)){ // vamos vaciando el array "enemigos" por optimización y por tener una manera de saber cuándo se ha superado el juego. "+ 2" para que no se llegue a ver el último cuadrado en pantalla.
+				enemigos.splice(i, 1);
+			}
+			if(enemigos.length == 0){
+				document.getElementById("Mensaje").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
+				clearInterval(idPintar);
+			}
 		}
 	}
 	/*
@@ -198,7 +206,7 @@ window.onload = function () {
 	miPersonaje = new Personaje(x, y);
 
 	// Lanzamos la animación
-	id1 = setInterval(pintaRectangulo, 1000 / 120);
+	idPintar = setInterval(pintar, 1000 / 120);
 
 }
 
