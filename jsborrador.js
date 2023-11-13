@@ -92,6 +92,7 @@ window.onload = function () {
 		vidas = 3;
 		puntuacion = 0;
 		miPersonaje.x = TOPEDERECHA / 2 - (ANCHOPJ / 2);
+		posicion = 0;
 	}
 
 	function pintar() {
