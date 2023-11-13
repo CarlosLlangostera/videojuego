@@ -72,25 +72,26 @@ window.onload = function () {
 		this.velocidadX = velocidadX;
 		this.velocidadY = velocidadY;
 	}
-	
-	for (let i = 0; i < NUMENEMIGOS; i++) {
-		posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
-		posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
-		velocidadEnemigoX = (Math.random() - 0.5) * 3;
-		velocidadEnemigoY = 2; // todos los enemigos parten de la misma velocidad Y inicial.
-		enemigos[i] = new Enemigo(posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY);
+
+	function generarEnemigos() {
+		for (let i = 0; i < NUMENEMIGOS; i++) {
+			posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
+			posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
+			velocidadEnemigoX = (Math.random() - 0.5) * 3;
+			velocidadEnemigoY = 2; // todos los enemigos parten de la misma velocidad Y inicial.
+			enemigos[i] = new Enemigo(posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY);
+		}
 	}
 
 	document.getElementById("inicioJuego").onclick = iniciarJuego;
 
-	document.getElementById("finJuego").onclick = detenerJuego;
-
 	function iniciarJuego() {
 		inicioJuego = true;
-	}
-
-	function detenerJuego() {
-		inicioJuego = false;
+		generarEnemigos();
+		enemigosRestantes = NUMENEMIGOS;
+		vidas = 3;
+		puntuacion = 0;
+		miPersonaje.x = TOPEDERECHA / 2 - (ANCHOPJ / 2);
 	}
 
 	function pintar() {
