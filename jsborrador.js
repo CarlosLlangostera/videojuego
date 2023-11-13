@@ -12,7 +12,7 @@ window.onload = function () {
 	const ENEMIGOSMAXIMOS = 1500;
 	const NUMENEMIGOS = ENEMIGOSMINIMOS + Math.round(Math.random() * (ENEMIGOSMAXIMOS - ENEMIGOSMINIMOS));
 	let enemigosRestantes = NUMENEMIGOS; // esta variable la usamos para evitar provocar fallos buscando en posiciones del array "enemigos" que ya no existen porque hemos borrado algún elemento
-	const PROFUNDIDADENEMIGOS = 100;
+	const PROFUNDIDADENEMIGOS = 100000;
 	let enemigos = [];
 	let vidas = 3;
 	let puntuacion = 0;
@@ -72,7 +72,7 @@ window.onload = function () {
 		this.velocidadX = velocidadX;
 		this.velocidadY = velocidadY;
 	}
-
+	
 	for (let i = 0; i < NUMENEMIGOS; i++) {
 		posicionX = Math.round(Math.random() * (TOPEDERECHA - ANCHOENEMIGO));
 		posicionY = TOPEABAJO + Math.round(Math.random() * (PROFUNDIDADENEMIGOS - TOPEABAJO));
