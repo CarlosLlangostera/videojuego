@@ -16,6 +16,7 @@ window.onload = function () {
 	let enemigos = [];
 	let vidas = 3;
 	let puntuacion = 0;
+	let invencibilidad = false;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -86,6 +87,8 @@ window.onload = function () {
 
 	function iniciarJuego() {
 		idPintar = setInterval(pintar, 1000 / 120);
+		invencibilidad = false;
+		idQuitarInvencibilidad = setInterval(quitarInvencibilidad, 1700);
 		generarEnemigos();
 		enemigosRestantes = NUMENEMIGOS;
 		vidas = 3;
@@ -94,66 +97,80 @@ window.onload = function () {
 		posicion = 0;
 	}
 
+	function quitarInvencibilidad() {
+		invencibilidad = false;
+	}
+
 	function pintar() {
 
-			document.getElementById('inicioJuego').style.visibility = 'hidden';
+		document.getElementById('inicioJuego').style.visibility = 'hidden';
 
-			document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
-			// borramos el canvas
-			ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
+		// borramos el canvas
+		ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
 
-			if (xDerecha) {
-				miPersonaje.generaPosicionDerecha();
+		if (xDerecha) {
+			miPersonaje.generaPosicionDerecha();
+		}
+
+		if (xIzquierda) {
+			miPersonaje.generaPosicionIzquierda();
+		}
+
+		// Pintamos al personaje
+		ctx.drawImage(miPersonaje.imagen, // Imagen completa con todos los personajes (Sprite)
+			miPersonaje.animacionPJ[posicion][0],    // Posicion X del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
+			miPersonaje.animacionPJ[posicion][1],	  // Posicion Y del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
+			miPersonaje.tamañoX, 		    // Tamaño X del comecocos que voy a recortar para dibujar
+			miPersonaje.tamañoY,	        // Tamaño Y del comecocos que voy a recortar para dibujar
+			miPersonaje.x,                // Posicion x de pantalla donde voy a dibujar el comecocos recortado
+			miPersonaje.y,				            // Posicion y de pantalla donde voy a dibujar el comecocos recortado
+			miPersonaje.tamañoX,		    // Tamaño X del comecocos que voy a dibujar
+			miPersonaje.tamañoY);         // Tamaño Y del comecocos que voy a dibujar					  
+
+		for (let i = 0; i < enemigosRestantes; i++) {
+			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
+			ctx.fillStyle = "black";
+			enemigos[i].x += enemigos[i].velocidadX;
+			if (enemigos[i].x <= 0) { // toca pared de la izquierda
+				enemigos[i].velocidadX = Math.abs(enemigos[i].velocidadX);
+			}
+			if (enemigos[i].x >= TOPEDERECHA - ANCHOENEMIGO) { // toca pared de la derecha
+				enemigos[i].velocidadX = -Math.abs(enemigos[i].velocidadX);
+			}
+			enemigos[i].y -= enemigos[i].velocidadY;
+			enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
+			if (enemigos[i].y <= 0 - (ALTOENEMIGO + 2)) { // vamos vaciando el array "enemigos" por optimización y por tener una manera de saber cuándo se ha superado el juego. "+ 2" para que no se llegue a ver el último cuadrado en pantalla.
+				enemigos.splice(i, 1);
+				enemigosRestantes--;
+				puntuacion++;
 			}
 
-			if (xIzquierda) {
-				miPersonaje.generaPosicionIzquierda();
+			if (invencibilidad == false) {
+				// lado derecho del PJ es mayor que el lado izquierdo del enemigo, lado izquierdo del PJ es menor que el lado derecho del enemigo, lado superior del PJ es mayor que el lado inferior del enemigo, lado inferior del PJ es menor que el lado superior del enemigo
+				if ((miPersonaje.x + ANCHOPJ) >= enemigos[i].x && (miPersonaje.x + 8) <= (enemigos[i].x + ANCHOENEMIGO) && miPersonaje.y <= (enemigos[i].y + ALTOENEMIGO) && (miPersonaje.y + ALTOPJ - 3) >= enemigos[i].y) {
+					vidas--;
+					invencibilidad = true;
+				}
+			}
+		}
+
+		document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
+
+		if (vidas == 0 || enemigos.length == 0) {
+			document.getElementById('inicioJuego').style.visibility = 'visible';
+
+			if (enemigos.length == 0) {
+				puntuacion = 10000;
+				document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion;
+				document.getElementById("MensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
 			}
 
-			// Pintamos al personaje
-			ctx.drawImage(miPersonaje.imagen, // Imagen completa con todos los personajes (Sprite)
-				miPersonaje.animacionPJ[posicion][0],    // Posicion X del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
-				miPersonaje.animacionPJ[posicion][1],	  // Posicion Y del sprite donde se encuentra el comecocos que voy a recortar del sprite para dibujar
-				miPersonaje.tamañoX, 		    // Tamaño X del comecocos que voy a recortar para dibujar
-				miPersonaje.tamañoY,	        // Tamaño Y del comecocos que voy a recortar para dibujar
-				miPersonaje.x,                // Posicion x de pantalla donde voy a dibujar el comecocos recortado
-				miPersonaje.y,				            // Posicion y de pantalla donde voy a dibujar el comecocos recortado
-				miPersonaje.tamañoX,		    // Tamaño X del comecocos que voy a dibujar
-				miPersonaje.tamañoY);         // Tamaño Y del comecocos que voy a dibujar					  
+			clearInterval(idPintar);
+			clearInterval(idQuitarInvencibilidad);
 
-			for (let i = 0; i < enemigosRestantes; i++) {
-				ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
-				ctx.fillStyle = "black";
-				enemigos[i].x += enemigos[i].velocidadX;
-				if (enemigos[i].x <= 0) { // toca pared de la izquierda
-					enemigos[i].velocidadX = Math.abs(enemigos[i].velocidadX);
-				}
-				if (enemigos[i].x >= TOPEDERECHA - ANCHOENEMIGO) { // toca pared de la derecha
-					enemigos[i].velocidadX = -Math.abs(enemigos[i].velocidadX);
-				}
-				enemigos[i].y -= enemigos[i].velocidadY;
-				enemigos[i].velocidadY += 0.0001; // Incremento de dificultad lento y progresivo. Aunque velocidadY no tiene un límite establecido, la partida acabará cuando dejen de salir enemigos, y en ese punto, la dificultad me parece apropiada.
-				if (enemigos[i].y <= 0 - (ALTOENEMIGO + 2)) { // vamos vaciando el array "enemigos" por optimización y por tener una manera de saber cuándo se ha superado el juego. "+ 2" para que no se llegue a ver el último cuadrado en pantalla.
-					enemigos.splice(i, 1);
-					enemigosRestantes--;
-					puntuacion++;
-				}
-
-				if (vidas == 0 || enemigos.length == 0) {
-					document.getElementById('inicioJuego').style.visibility = 'visible';
-
-					if (enemigos.length == 0) {
-						puntuacion = 10000;
-						document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion;
-						document.getElementById("MensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
-					}
-
-					clearInterval(idPintar);
-					
-				}
-			
 		}
 	}
+
 	/*
 		function activarSpriteDerecha() {
 	
@@ -183,6 +200,7 @@ window.onload = function () {
 			ejecutarAbajo = false;
 		}
 	*/
+
 	function activaMovimiento(evt) {
 
 		switch (evt.keyCode) {
