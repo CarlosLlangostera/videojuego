@@ -98,7 +98,7 @@ window.onload = function () {
 
 			document.getElementById('inicioJuego').style.visibility = 'hidden';
 
-			document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
+			document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
 			// borramos el canvas
 			ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
 
