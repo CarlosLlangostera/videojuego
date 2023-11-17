@@ -18,7 +18,7 @@ window.onload = function () {
 	let puntuacion = 0;
 	let invencibilidad = false;
 	let partidasJugadas = 0;
-	let elementoRanking = "";
+	let tituloRanking, h3Ranking, elementoRanking, elementoSalto;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -175,32 +175,24 @@ window.onload = function () {
 
 			partidasJugadas++;
 
-			if (localStorage) {
-				localStorage.setItem(partidasJugadas, puntuacion);
+			localStorage.setItem(partidasJugadas, puntuacion);
 
-				for (let i = 0; i < partidasJugadas; i++) {
-					elementoRanking = document.createTextNode(localStorage.getItem(i));
-					document.getElementById("ranking").appendChild(elementoRanking);
-				}
+			tituloRanking = document.createTextNode("Ranking");
+			h3Ranking = document.createElement("h3");
+			h3Ranking.appendChild(tituloRanking);
+			document.getElementById("ranking").appendChild(h3Ranking);
+			elementoSalto = document.createElement("br");
+
+			for (let j = 1; j <= partidasJugadas; j++) {
+				elementoRanking = document.createTextNode(localStorage.getItem(j));
+				document.getElementById("ranking").appendChild(elementoRanking);
+				document.getElementById("ranking").appendChild(elementoSalto.cloneNode());
 			}
 
 			clearInterval(idPintar);
 			clearInterval(idQuitarInvencibilidad);
 
 		}
-	}
-
-	function allStorage() {
-
-		var values = [],
-			keys = Object.keys(localStorage),
-			i = keys.length;
-
-		while (i--) {
-			values.push(localStorage.getItem(keys[i]));
-		}
-
-		return values;
 	}
 
 	/*
