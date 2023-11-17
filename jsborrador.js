@@ -88,13 +88,14 @@ window.onload = function () {
 	function iniciarJuego() {
 		idPintar = setInterval(pintar, 1000 / 120);
 		invencibilidad = false;
-		idQuitarInvencibilidad = setInterval(quitarInvencibilidad, 1700);
+		idQuitarInvencibilidad = setInterval(quitarInvencibilidad, 1500);
 		generarEnemigos();
 		enemigosRestantes = NUMENEMIGOS;
 		vidas = 3;
 		puntuacion = 0;
 		miPersonaje.x = TOPEDERECHA / 2 - (ANCHOPJ / 2);
 		posicion = 0;
+		document.getElementById("MensajeInferior").innerHTML = "";
 	}
 
 	function quitarInvencibilidad() {
