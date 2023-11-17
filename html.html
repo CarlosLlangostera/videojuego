@@ -2,26 +2,40 @@
 
 <html>
 
-  <head>
-    <meta charset="utf-8">
-	<title>Videojuego</title>
-	<script src="jsborrador.js"></script>
-	<link rel="stylesheet" type="text/css" href="css.css" title="style" />
-  </head>
+<head>
+  <meta charset="utf-8">
+  <title>Videojuego</title>
+  <script src="jsborrador.js"></script>
+  <link rel="stylesheet" type="text/css" href="css.css" title="style" />
+  <style>
+
+    .centrar {
+      display: flex;
+    }
+
+    #ranking {
+      margin-left: 2%;
+    }
+
+  </style>
+</head>
 
 <body>
 
-<h1>Videojuego basado en Downwell</h1>
+  <h1>Videojuego basado en Downwell</h1>
 
-<p id="MensajeSuperior"></p>
+  <p id="mensajeSuperior"></p>
 
-<canvas id="miCanvas" width="400" height="700"></canvas>
+  <div class="centrar">
+    <canvas id="miCanvas" width="400" height="700"></canvas>
+    <div id="ranking"></div>
+  </div>
 
-<br>
+  <br>
 
-<input id="inicioJuego" type="button" value="Iniciar juego" />
+  <input id="inicioJuego" type="button" value="Iniciar juego" />
 
-<p id="MensajeInferior"></p>
+  <p id="mensajeInferior"></p>
 
 </body>
 

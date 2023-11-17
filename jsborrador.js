@@ -17,6 +17,8 @@ window.onload = function () {
 	let vidas = 3;
 	let puntuacion = 0;
 	let invencibilidad = false;
+	let partidasJugadas = 0;
+	let elementoRanking = "";
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -95,7 +97,8 @@ window.onload = function () {
 		puntuacion = 0;
 		miPersonaje.x = TOPEDERECHA / 2 - (ANCHOPJ / 2);
 		posicion = 0;
-		document.getElementById("MensajeInferior").innerHTML = "";
+		document.getElementById("mensajeInferior").innerHTML = "";
+		document.getElementById("ranking").innerHTML = "";
 	}
 
 	function quitarInvencibilidad() {
@@ -155,25 +158,49 @@ window.onload = function () {
 			}
 		}
 
-		document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
+		document.getElementById("mensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
 
 		if (vidas == 0 || enemigos.length == 0) {
 			document.getElementById('inicioJuego').style.visibility = 'visible';
 
 			if (enemigos.length == 0) {
 				puntuacion = 10000;
-				document.getElementById("MensajeSuperior").innerHTML = "Puntuación: " + puntuacion;
-				document.getElementById("MensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
+				document.getElementById("mensajeSuperior").innerHTML = "Puntuación: " + puntuacion;
+				document.getElementById("mensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
 			}
 
 			if (vidas == 0) {
-				document.getElementById("MensajeInferior").innerHTML = "Fin del juego 💔";
+				document.getElementById("mensajeInferior").innerHTML = "Fin del juego 💔";
+			}
+
+			partidasJugadas++;
+
+			if (localStorage) {
+				localStorage.setItem(partidasJugadas, puntuacion);
+
+				for (let i = 0; i < partidasJugadas; i++) {
+					elementoRanking = document.createTextNode(localStorage.getItem(i));
+					document.getElementById("ranking").appendChild(elementoRanking);
+				}
 			}
 
 			clearInterval(idPintar);
 			clearInterval(idQuitarInvencibilidad);
 
 		}
+	}
+
+	function allStorage() {
+
+		var values = [],
+			keys = Object.keys(localStorage),
+			i = keys.length;
+
+		while (i--) {
+			values.push(localStorage.getItem(keys[i]));
+		}
+
+		return values;
 	}
 
 	/*
