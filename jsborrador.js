@@ -165,6 +165,10 @@ window.onload = function () {
 				document.getElementById("MensajeInferior").innerHTML = "¡Enhorabuena! Has completado el juego. Vidas restantes: " + vidas;
 			}
 
+			if (vidas == 0) {
+				document.getElementById("MensajeInferior").innerHTML = "Fin del juego 💔";
+			}
+
 			clearInterval(idPintar);
 			clearInterval(idQuitarInvencibilidad);
 
