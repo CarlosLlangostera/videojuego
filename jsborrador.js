@@ -18,7 +18,8 @@ window.onload = function () {
 	let puntuacion = 0;
 	let invencibilidad = false;
 	let partidasJugadas = 0;
-	let tituloRanking, h3Ranking, elementoRanking, elementoSalto;
+	let ranking = [];
+	let tituloRanking, h3Ranking, elementoRanking, posicionRanking, elementoSalto;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
 	//lineas 15 a 58: personaje
@@ -184,7 +185,15 @@ window.onload = function () {
 			elementoSalto = document.createElement("br");
 
 			for (let j = 1; j <= partidasJugadas; j++) {
-				elementoRanking = document.createTextNode(localStorage.getItem(j));
+				ranking[j - 1] = localStorage.getItem(j);
+			}
+
+			ranking.sort(function(a, b){return b - a});
+
+			for (let k = 1; k <= partidasJugadas; k++) {
+				elementoRanking = document.createTextNode(ranking[k - 1] + " puntos");
+				posicionRanking = document.createTextNode(k + "ª posición: ");
+				document.getElementById("ranking").appendChild(posicionRanking);
 				document.getElementById("ranking").appendChild(elementoRanking);
 				document.getElementById("ranking").appendChild(elementoSalto.cloneNode());
 			}
