@@ -263,6 +263,12 @@ window.onload = function () {
 					posicion = 3; // Si no hemos pulsado ninguna tecla de dirección antes de pulsar el espacio, elegimos simplemente uno de los dos modelos del personaje (en este caso, el que tiene la ballesta a la izquierda).
 				}
 
+			// Enter. Para poder iniciar el juego dándole al enter además de con el botón de "Iniciar juego".
+			case 13:
+				if (vidas == 0 || enemigos.length == 0) {
+					iniciarJuego();
+				}
+
 		}
 	}
 
