@@ -31,6 +31,7 @@ window.onload = function () {
 
 	let xDerecha;
 	let xIzquierda;
+	let ultimaDireccion;
 
 	let posicion = 0;   // Posición del array 0, 1
 	let ejecutarDerecha = true;
@@ -188,7 +189,7 @@ window.onload = function () {
 				ranking[j - 1] = localStorage.getItem(j);
 			}
 
-			ranking.sort(function(a, b){return b - a});
+			ranking.sort(function (a, b) { return b - a });
 
 			for (let k = 1; k <= partidasJugadas; k++) {
 				elementoRanking = document.createTextNode(ranking[k - 1] + " puntos");
@@ -242,13 +243,25 @@ window.onload = function () {
 			case 37:
 				xIzquierda = true;
 				posicion = 1;
+				ultimaDireccion = "izquierda";
 				break;
 
 			// Right arrow.
 			case 39:
 				xDerecha = true;
 				posicion = 2;
+				ultimaDireccion = "derecha";
 				break;
+
+			// Space bar.
+			case 32:
+				if (ultimaDireccion == "izquierda") {
+					posicion = 3;
+				} else if (ultimaDireccion == "derecha") {
+					posicion = 4;
+				} else {
+					posicion = 3; // Si no hemos pulsado ninguna tecla de dirección antes de pulsar el espacio, elegimos simplemente uno de los dos modelos del personaje (en este caso, el que tiene la ballesta a la izquierda).
+				}
 
 		}
 	}
