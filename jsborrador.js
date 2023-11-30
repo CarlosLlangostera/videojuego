@@ -19,6 +19,8 @@ window.onload = function () {
 	let invencibilidad = false;
 	let partidasJugadas = 0;
 	let ranking = [];
+	let disparando;
+	let z = 0;
 	let tituloRanking, h3Ranking, elementoRanking, posicionRanking, elementoSalto;
 	let posicionX, posicionY, velocidadEnemigoX, velocidadEnemigoY;
 
@@ -37,7 +39,7 @@ window.onload = function () {
 	let ejecutarDerecha = true;
 
 	let miPersonaje;
-	let imagen; // en principio tendremos en una sola imagen tanto sprites del personaje como de los enemigos. Puede variar más adelante
+	let spritePersonaje; // en principio tendremos en una sola imagen tanto sprites del personaje como de los enemigos. Puede variar más adelante
 
 	function Personaje(x, y) {
 
@@ -92,7 +94,7 @@ window.onload = function () {
 	function iniciarJuego() {
 		idPintar = setInterval(pintar, 1000 / 120);
 		invencibilidad = false;
-		idQuitarInvencibilidad = setInterval(quitarInvencibilidad, 1500);
+		idQuitarInvencibilidad = setInterval(quitarInvencibilidad, 2000);
 		generarEnemigos();
 		enemigosRestantes = NUMENEMIGOS;
 		vidas = 3;
@@ -114,12 +116,19 @@ window.onload = function () {
 		// borramos el canvas
 		ctx.clearRect(0, 0, TOPEDERECHA, TOPEABAJO);
 
+		// pintamos la imagen de fondo
+		ctx.drawImage(imagenFondo, 0, 0, canvas.width, canvas.height);
+
 		if (xDerecha) {
 			miPersonaje.generaPosicionDerecha();
 		}
 
 		if (xIzquierda) {
 			miPersonaje.generaPosicionIzquierda();
+		}
+
+		if (disparando) {
+			console.log("Se ha disparado " + ++z + " veces");
 		}
 
 		// Pintamos al personaje
@@ -134,8 +143,7 @@ window.onload = function () {
 			miPersonaje.tamañoY);         // Tamaño Y del comecocos que voy a dibujar					  
 
 		for (let i = 0; i < enemigosRestantes; i++) {
-			ctx.fillRect(enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
-			ctx.fillStyle = "black";
+			ctx.drawImage(spriteEnemigo, enemigos[i].x, enemigos[i].y, ALTOENEMIGO, ANCHOENEMIGO);
 			enemigos[i].x += enemigos[i].velocidadX;
 			if (enemigos[i].x <= 0) { // toca pared de la izquierda
 				enemigos[i].velocidadX = Math.abs(enemigos[i].velocidadX);
@@ -153,12 +161,15 @@ window.onload = function () {
 
 			if (invencibilidad == false) {
 				// lado derecho del PJ es mayor que el lado izquierdo del enemigo, lado izquierdo del PJ es menor que el lado derecho del enemigo, lado superior del PJ es mayor que el lado inferior del enemigo, lado inferior del PJ es menor que el lado superior del enemigo
-				if ((miPersonaje.x + ANCHOPJ) >= enemigos[i].x && (miPersonaje.x + 8) <= (enemigos[i].x + ANCHOENEMIGO) && miPersonaje.y <= (enemigos[i].y + ALTOENEMIGO) && (miPersonaje.y + ALTOPJ - 3) >= enemigos[i].y) {
+				// retocado para mayor credibilidad visual a la hora de recibir impactos
+				if ((miPersonaje.x + ANCHOPJ) >= enemigos[i].x + 5 && (miPersonaje.x + 8) <= (enemigos[i].x + ANCHOENEMIGO) && miPersonaje.y <= (enemigos[i].y + ALTOENEMIGO) && (miPersonaje.y + ALTOPJ - 3) >= enemigos[i].y) {
 					vidas--;
 					invencibilidad = true;
 				}
 			}
 		}
+
+
 
 		document.getElementById("mensajeSuperior").innerHTML = "Puntuación: " + puntuacion + "</br>Vidas: " + vidas; // La puntuación aumenta en 1 por cada enemigo superado (es decir, que sale de la pantalla por la parte superior). Como el número de enemigos puede variar en cada intento, al superar el juego se establecerá automáticamente la puntuación máxima (10000).
 
@@ -255,6 +266,7 @@ window.onload = function () {
 
 			// Space bar.
 			case 32:
+				disparando = true;
 				if (ultimaDireccion == "izquierda") {
 					posicion = 3;
 				} else if (ultimaDireccion == "derecha") {
@@ -287,6 +299,10 @@ window.onload = function () {
 				xDerecha = false;
 				break;
 
+			// Space bar.
+			case 32:
+				disparando = false;
+
 		}
 
 	}
@@ -300,9 +316,16 @@ window.onload = function () {
 	// Generamos el contexto de trabajo
 	ctx = canvas.getContext("2d");
 
-	imagen = new Image();
-	imagen.src = "SpritePersonaje40.png";
-	Personaje.prototype.imagen = imagen;
+	spritePersonaje = new Image();
+	spritePersonaje.src = "img/SpritePersonaje40.png";
+	Personaje.prototype.imagen = spritePersonaje;
+
+	spriteEnemigo = new Image();
+	spriteEnemigo.src = "img/enemigoFrame1.png";
+	Enemigo.prototype.imagen = spriteEnemigo;
+
+	imagenFondo = new Image();
+	imagenFondo.src = "img/fondo.jpg";
 
 	miPersonaje = new Personaje(x, y);
 
