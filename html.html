@@ -1,54 +1,62 @@
 <!DOCTYPE html>
 
+
 <html>
+
 
 <head>
   <meta charset="utf-8">
   <title>Videojuego</title>
-  <script src="jsborrador.js"></script>
+  <script src="javascript.js"></script>
   <link rel="stylesheet" type="text/css" href="css.css" title="style" />
   <style>
+
 
     .centrar {
       display: flex;
     }
 
+
     #ranking {
       margin-left: 2%;
     }
 
+
   </style>
 </head>
 
+
 <body>
+
 
   <h1>Videojuego basado en Downwell</h1>
 
+
   <p id="mensajeSuperior"></p>
+
 
   <div class="centrar">
     <canvas id="miCanvas" width="400" height="700"></canvas>
     <div id="ranking"></div>
   </div>
 
+
   <br>
+
 
   <input id="inicioJuego" type="button" value="Iniciar juego" />
 
+
   <p id="mensajeInferior"></p>
 
-  <!--<audio id="muerte" src="tope.mp3"></audio>
-  
-  en js:
+  <audio id="enemigoAcertado" src="enemigoAcertado.mp3"></audio>
 
-  let audioMuerte;
-  audioMuerte.play();
-  audioMuerte = document.getElementById("muerte");
+  <audio id="hit" src="hit.mp3"></audio>
 
-  para repetir el sonido todo el rato:
+  <audio id="disparo" src="disparo.mp3"></audio>
 
-  audioMuerte.currentTime = 0; -->
 
 </body>
+
 
 </html>
